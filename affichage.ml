@@ -71,6 +71,7 @@ let test ()=
 	set_color red;
 	affichageVerticale ();
     affichageHorizontale ();
+    set_font "-bitstream-bitstream charter-bond-r-normal--0-0-0-0-p-0-ascii-0";
     affichageChiffres grille
 	
 let () = 
