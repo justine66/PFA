@@ -5,7 +5,7 @@ type case = { mutable modifiable : bool;
 			  mutable valeur     : char}
 			  
 (*let grille = Array.make_matrix 9 9 (ref{modifiable = true ; valeur = '0'})*)
-let grille = Array.make_matrix 9 9 {modifiable = true ; valeur = '0'}
+let grille = Array.make_matrix 9 9 {modifiable = false ; valeur = '0'}
 let solution = Array.init 9 (fun i -> Array.make 9 '0')
 let fichier_solution = ref "c"
 
@@ -20,7 +20,7 @@ let start nom_fichier nom_soluce =
     let b = input_line soluce in
     
     for i = 0 to (String.length a)-1  do
-      grille.(i/9).(i mod 9) <- a.[i];        
+      grille.(i/9).(i mod 9) <-{ modifiable = true; valeur = a.[i]};        
 	  solution.(i/9).(i mod 9) <- b.[i];    
                          
     done
@@ -34,7 +34,7 @@ let affichage g =
   for i = 0 to (Array.length g)-1  do
      for j = 0 to (Array.length g.(0))-1  do
     
-      Printf.printf "%c" g.(i).(j)
+      Printf.printf "%c" g.(i).(j).valeur
                     done
    
   done;;
@@ -44,14 +44,14 @@ let check () =
 	let rec check_rec  i j = 
 		match i with
 		|8 -> (match j with
-			|8 -> if grille.(i).(j) == solution.(i).(j) then true else false
-			|_ -> if grille.(i).(j) == solution.(i).(j) then check_rec i (j+1) else false)
+			|8 -> if grille.(i).(j).valeur == solution.(i).(j) then true else false
+			|_ -> if grille.(i).(j).valeur == solution.(i).(j) then check_rec i (j+1) else false)
 		|_ -> (match j with
-			|8 -> if grille.(i).(j) == solution.(i).(j) then check_rec (i+1) 0 else false
-			|_ -> if grille.(i).(j) == solution.(i).(j) then check_rec i (j+1) else false)
+			|8 -> if grille.(i).(j).valeur == solution.(i).(j) then check_rec (i+1) 0 else false
+			|_ -> if grille.(i).(j).valeur == solution.(i).(j) then check_rec i (j+1) else false)
 	in check_rec 0 0;;
 
-let check_case i j = if grille.(i).(j) == solution.(i).(j) then true else false;;
+let check_case i j = if grille.(i).(j).valeur == solution.(i).(j) then true else false;;
 	
 let rec save_name bd =
 		(*Printf.printf "Test\n";*)
@@ -82,7 +82,7 @@ let save () =
 	let save_file = open_out ("grids/"^a) in
 	for i = 0 to (Array.length grille)-1  do
 		for j = 0 to (Array.length grille.(0))-1  do
-			Printf.fprintf save_file "%c" grille.(i).(j); 
+			Printf.fprintf save_file "%c" grille.(i).(j).valeur; 
 		done
 	done;
 	close_out save_file;
@@ -103,18 +103,13 @@ let charge () =
 		in charge_aux b charge_file
 		 ;;
 		 
-let regles() =
-	let r = "Les Règles" in
-	let rg = "Remplir les cases vides avec les chiffres de 1 à 9, de telle sorte qu'ils n'apparaissent qu'une fois par ligne, par colonne et par carré de 3x3 cases." in 
-	let c = "Les Commandes" in 
-	let c1 = "q: exit" in 
-			Printf.printf "%s\n %s\n %s\n %s\n " r rg c c1
+
 		
 	
 let grillePourAffichage ()=
 	start "grid2.txt" "solution0.txt";;
 	
-let () =
+let main() =
 	start "grid0.txt" "solution0.txt" ;
 	(*affichage grille;*)
 	Printf.printf "\n";
