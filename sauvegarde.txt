@@ -1,0 +1,12 @@
+ll.txt/solution0.txt
+qq.txt/solution0.txt
+mm.txt/solution0.txt
+vv.txt/solution0.txt
+titi.txt/ti
+toto.txt/to
+rr.txt/solution0.txt
+ss.txt/solution0.txt
+aa.txt/solution0.txt
+dd.txt/solution0.txt
+bb.txt/solution0.txt
+nn.txt/solution0.txt

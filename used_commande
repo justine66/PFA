@@ -1,0 +1,4 @@
+eval $(opam config env)
+make 
+./affichage.native
+

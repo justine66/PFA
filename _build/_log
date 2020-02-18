@@ -1,0 +1,22 @@
+### Starting build.
+# Target: affichage.ml.depends, tags: { package(graphics), package(str), extension:ml, file:affichage.ml, ocaml, ocamldep, quiet }
+ocamlfind ocamldep -package str -package graphics -modules affichage.ml > affichage.ml.depends # cached
+# Target: ig.ml.depends, tags: { package(graphics), package(str), extension:ml, file:ig.ml, ocaml, ocamldep, quiet }
+ocamlfind ocamldep -package str -package graphics -modules ig.ml > ig.ml.depends # cached
+# Target: ig.cmo, tags: { package(graphics), package(str), byte, compile, extension:cmo, extension:ml, file:ig.cmo, file:ig.ml, implem, ocaml, quiet }
+ocamlfind ocamlc -c -package str -package graphics -o ig.cmo ig.ml # cached
+# Target: p1.ml.depends, tags: { package(graphics), package(str), extension:ml, file:p1.ml, ocaml, ocamldep, quiet }
+ocamlfind ocamldep -package str -package graphics -modules p1.ml > p1.ml.depends # cached
+# Target: p1.cmo, tags: { package(graphics), package(str), byte, compile, extension:cmo, extension:ml, file:p1.cmo, file:p1.ml, implem, ocaml, quiet }
+ocamlfind ocamlc -c -package str -package graphics -o p1.cmo p1.ml # cached
+# Target: affichage.cmo, tags: { package(graphics), package(str), byte, compile, extension:cmo, extension:ml, file:affichage.cmo, file:affichage.ml, implem, ocaml, quiet }
+ocamlfind ocamlc -c -package str -package graphics -o affichage.cmo affichage.ml # cached
+# Target: ig.cmx, tags: { package(graphics), package(str), compile, extension:cmx, extension:ml, file:ig.cmx, file:ig.ml, implem, native, ocaml, quiet }
+ocamlfind ocamlopt -c -package str -package graphics -o ig.cmx ig.ml # cached
+# Target: p1.cmx, tags: { package(graphics), package(str), compile, extension:cmx, extension:ml, file:p1.cmx, file:p1.ml, implem, native, ocaml, quiet }
+ocamlfind ocamlopt -c -package str -package graphics -o p1.cmx p1.ml # cached
+# Target: affichage.cmx, tags: { package(graphics), package(str), compile, extension:cmx, extension:ml, file:affichage.cmx, file:affichage.ml, implem, native, ocaml, quiet }
+ocamlfind ocamlopt -c -package str -package graphics -o affichage.cmx affichage.ml # cached
+# Target: affichage.native, tags: { package(graphics), package(str), dont_link_with, extension:native, file:affichage.native, link, native, ocaml, program, quiet }
+ocamlfind ocamlopt -linkpkg -package str -package graphics ig.cmx p1.cmx affichage.cmx -o affichage.native # cached
+# Compilation successful.
