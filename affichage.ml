@@ -31,72 +31,42 @@ let affichageHorizontale ()=
 		moveto (30) (30+j*60);
 		lineto (570) (30+j*60);
 	done
+
 	
-(* moment où on a galéré !!!
 let affichageChiffres g =
-	let rec aChiffres_rec g i j x y = 
-		match i with
-		|8 -> (match j with
-			|8 -> if g.(i).(j) == '0' then () else moveto 550 50; draw_char g.(i).(j)
-			|j when j >= 0 && j < 8 -> Printf.printf "%c, %d, %d dernier chiffre **** \n" g.(i).(j) i j; if g.(i).(j) == '0' then aChiffres_rec g i (j+1) (x+60) y else moveto x y; 
-																			 draw_char g.(i).(j);
-																			 aChiffres_rec g i (j+1) (x+60) y
-			|_ -> assert false)
-		|i when i >= 0 && i < 8 -> (match j with
-			|8 -> Printf.printf "%c, %d, %d dernier chiffre  &&&&&\n" g.(i).(j) i j; if g.(i).(j) == '0' then aChiffres_rec g (i+1) 0 50 (y-60) else moveto x y; 
-																			 draw_char g.(i).(j);
-																			 aChiffres_rec g (i+1) 0 50 (y-60)
-			|j when j >= 0 && j < 8 -> Printf.printf "%c, %d, %d dernier chiffre @@@@@@\n" g.(i).(j) i j; if grille.(i).(j) == '0' then aChiffres_rec g i (j+1) (x+60) y else moveto x y; 
-																				  draw_char g.(i).(j);
-																				  aChiffres_rec g i (j+1) (x+60) y
-			|_ -> assert false)
-		|_ -> assert false
-	in aChiffres_rec g 0 0 50 550;;*)
-  	
-(*let affichageChiffres g =
-	let rec aChiffres_rec g i j x y = 
-		match i with
-		|8 -> (match j with
-			|8 -> if g.(i).(j).valeur == '0' then () else moveto (x+60) y; draw_char g.(i).(j).valeur
-			|j when j >= 0 && j < 8 -> if g.(i).(j).valeur =='0' then begin aChiffres_rec g i (j+1) (x+60) y end else begin moveto (x+60) y; draw_char g.(i).(j).valeur; aChiffres_rec g i (j+1) (x+60) y end 
-			|_ -> assert false)
-		|i when i >= 0 && i < 8 -> (match j with
-			|8 -> if g.(i).(j).valeur == '0' then begin aChiffres_rec g (i+1) 0 0 (y-60) end else begin moveto (x+60) y; draw_char g.(i).(j).valeur; aChiffres_rec g (i+1) 0 0 (y-60) end
-			|j when j >= 0 && j < 8 -> if g.(i).(j).valeur == '0' then begin aChiffres_rec g i (j+1) (x+60) y end else begin moveto (x+60) y; draw_char g.(i).(j).valeur; aChiffres_rec g i (j+1) (x+60) y end
-			|_ -> assert false)
-		|_ -> assert false
-	in aChiffres_rec g 0 0 (-5) 532;; 	*)
-	
-let affichageChiffres g = (* affiche les valeurs de la grille selectionnée*) 
 	let rec aChiffres_rec g i j = 
 		match i with
 		|8 -> (match j with
-			|8 -> if g.(i).(j).valeur != '0' then begin Printf.printf "%c\n" g.(i).(j).valeur; moveto (j*60+60) (600-(i*60+60)); draw_char g.(i).(j).valeur end else Printf.printf "fin grille\n"
-			|j when j >= 0 && j < 8 -> if g.(i).(j).valeur =='0' then begin aChiffres_rec g i (j+1) end else begin Printf.printf "%c" g.(i).(j).valeur; moveto (j*60+60) (600-(i*60+60)); draw_char g.(i).(j).valeur; aChiffres_rec g i (j+1) end 
+			|8 -> if g.(i).(j).valeur != '0' then begin Printf.printf "abscisse : %d ordonne : %d = %b" j i g.(i).(j).modifiable; moveto (j*60+50) (600-(i*60+50)); draw_char g.(i).(j).valeur end
+			|j when j >= 0 && j < 8 -> if g.(i).(j).valeur =='0' then begin aChiffres_rec g i (j+1) end else begin Printf.printf "abscisse : %d ordonne : %d = %b|" j i g.(i).(j).modifiable; moveto (j*60+55) (600-(i*60+70)); draw_char g.(i).(j).valeur; aChiffres_rec g i (j+1) end 
 			|_ -> assert false)
 		|i when i >= 0 && i < 8 -> (match j with
-			|8 -> if g.(i).(j).valeur == '0' then begin aChiffres_rec g (i+1) 0 end else begin Printf.printf "%c" g.(i).(j).valeur; moveto (j*60+60) (600-(i*60+60)); draw_char g.(i).(j).valeur; aChiffres_rec g (i+1) 0 end
-			|j when j >= 0 && j < 8 -> if g.(i).(j).valeur == '0' then begin aChiffres_rec g i (j+1) end else begin Printf.printf "%c" g.(i).(j).valeur; moveto (j*60+60) (600-(i*60+60)); draw_char g.(i).(j).valeur; aChiffres_rec g i (j+1) end
+			|8 -> if g.(i).(j).valeur == '0' then begin aChiffres_rec g (i+1) 0 end else begin Printf.printf "abscisse : %d ordonne : %d = %b \n" j i g.(i).(j).modifiable; moveto (j*60+55) (600-(i*60+70)); draw_char g.(i).(j).valeur; aChiffres_rec g (i+1) 0 end
+			|j when j >= 0 && j < 8 -> if g.(i).(j).valeur == '0' then begin aChiffres_rec g i (j+1) end else begin Printf.printf "abscisse : %d ordonne : %d = %b|" j i g.(i).(j).modifiable; moveto (j*60+55) (600-(i*60+70)); draw_char g.(i).(j).valeur; aChiffres_rec g i (j+1) end
 			|_ -> assert false)
 		|_ -> assert false
-	in aChiffres_rec g 0 0;; 	
+	in aChiffres_rec g 0 0;; 		
  
-let test ()= 
-	set_color red;
-	(* affichage de la grille*)
-	affichageVerticale ();
+let setChiffre ()= 
+    set_color red;
+    affichageVerticale ();
     affichageHorizontale ();
+    (*set_font "-*-fixed-bold-*-*-*-18-120-*-*-*-*-*-*";*)
     set_font "-bitstream-bitstream charter-bold-r-normal--0-0-0-0-p-0-ascii-0";
-    
     affichageChiffres grille
-    
-(*let trouverDansGrille x y =
-	Printf.print*)
-    
+
 let mettreChiffre x y key = 
-	
-	moveto x y;
-	draw_char key
+	moveto (x*60+55) (600-(70+y*60));
+	if grille.(y).(x).modifiable != false then
+	begin
+		grille.(y).(x) <- { modifiable = true; valeur = key};
+		draw_char key;
+	end
+    
+let trouverDansGrille x y touche =
+	let a = (x-30)/60 in
+	let b = 8-((y-30)/60) in
+	mettreChiffre a b touche
     
 let rec saisiChiffres () = 
 	set_color green;
@@ -104,7 +74,8 @@ let rec saisiChiffres () =
 	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y and touche = read_key() in
 	(*let touche = attend.read_key() in*)
 	(*let touche = wait_next_event [Key_pressed] in*)
-	mettreChiffre abscisse ordonnee touche;
+	trouverDansGrille abscisse ordonnee touche;
+	(*mettreChiffre abscisse ordonnee touche;*)
 	saisiChiffres ()
 	      
 let regles() = (*permet d'afficher les regles et les commandes*)
