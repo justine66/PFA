@@ -20,8 +20,16 @@ let start nom_fichier nom_soluce =
     let b = input_line soluce in
     
     for i = 0 to (String.length a)-1  do
-      grille.(i/9).(i mod 9) <-{ modifiable = true; valeur = a.[i]};        
-	  solution.(i/9).(i mod 9) <- b.[i];    
+		if a.[i] != '0' then
+			begin
+				grille.(i/9).(i mod 9) <-{ modifiable = false; valeur = a.[i]};        
+				solution.(i/9).(i mod 9) <- b.[i];    
+			end
+		else 
+			begin
+				grille.(i/9).(i mod 9) <-{ modifiable = true; valeur = a.[i]};        
+				solution.(i/9).(i mod 9) <- b.[i];    
+			end
                          
     done
   in split();
