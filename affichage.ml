@@ -125,7 +125,7 @@ let main() =
 	(*P1.affichage grille; affiche la grille dans le terminal*)
 	open_graph " 900x600";
 	draw_image (Ig.init_image "galaxy.ppm") 0 0;
-	test ();
+	setChiffre ();
 	boutons ();
 	saisiChiffres ();
 	ignore(read_key ())
