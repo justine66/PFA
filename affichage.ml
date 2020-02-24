@@ -36,7 +36,7 @@ let affichageChiffres g =
 	let rec aChiffres_rec g i j = 
 		match i with
 		|8 -> (match j with
-			|8 -> if g.(i).(j).valeur != '0' then begin moveto (j*60+50) (600-(i*60+50)); if g.(i).(j).modifiable == false then
+			|8 -> if g.(i).(j).valeur != '0' then begin moveto (j*60+55) (600-(i*60+70)); if g.(i).(j).modifiable == false then
 																							begin
 																							set_color red;
 																							draw_char g.(i).(j).valeur
