@@ -20,16 +20,8 @@ let start nom_fichier nom_soluce =
     let b = input_line soluce in
     
     for i = 0 to (String.length a)-1  do
-		if a.[i] != '0' then
-			begin
-				grille.(i/9).(i mod 9) <-{ modifiable = false; valeur = a.[i]};        
-				solution.(i/9).(i mod 9) <- b.[i];    
-			end
-		else 
-			begin
-				grille.(i/9).(i mod 9) <-{ modifiable = true; valeur = a.[i]};        
-				solution.(i/9).(i mod 9) <- b.[i];    
-			end
+      grille.(i/9).(i mod 9) <-{ modifiable = true; valeur = a.[i]};        
+	  solution.(i/9).(i mod 9) <- b.[i];    
                          
     done
   in split();
@@ -61,7 +53,7 @@ let check () =
 
 let check_case i j = if grille.(i).(j).valeur == solution.(i).(j) then true else false;;
 	
-let rec save_name bd =
+let save_name bd =
 		(*Printf.printf "Test\n";*)
 		let file = open_out "sauvegarde.txt" in 
 		let rec save_b bc = 
@@ -96,20 +88,7 @@ let save () =
 	close_out save_file;
 	save_n a [];;
 
-let charge () = 
-		let charge_file = open_in ("sauvegarde.txt") in
-		let b= ref [] in
-		let rec charge_aux b cf =
-			try
-				let sp = Str.split (Str.regexp "/") (input_line cf) in 
-				b := (List.hd sp)::!b;
-				charge_aux b cf;
-				(*Printf.printf "%s\n" (List.hd sp);*)
-				
-			with
-				|End_of_file -> !b; close_in charge_file;
-		in charge_aux b charge_file
-		 ;;
+
 		 
 
 		
