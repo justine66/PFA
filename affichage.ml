@@ -5,7 +5,7 @@ open P1
 let affichageVerticale ()= 
 
 	for j = 0 to 3 do
-		moveto (29+j*180) (30);
+		Graphics.moveto (29+j*180) (30);
 		lineto (29+j*180) (570);
 		moveto (31+j*180) (30);
 		lineto (31+j*180) (570);
@@ -60,6 +60,7 @@ let affichageChiffres g =
 																							draw_char g.(i).(j).valeur;
 																							aChiffres_rec g i (j+1)
 																							end
+																						end
 										
 			|_ -> assert false)
 		|i when i >= 0 && i < 8 -> (match j with
@@ -93,47 +94,6 @@ let affichageChiffres g =
 		|_ -> assert false
 	in aChiffres_rec g 0 0;; 		
  
-let setChiffre ()= 
-    set_color red;
-    affichageVerticale ();
-    affichageHorizontale ();
-    (*set_font "-*-fixed-bold-*-*-*-18-120-*-*-*-*-*-*";*)
-    set_font "-bitstream-bitstream charter-bold-r-normal--0-0-0-0-p-0-ascii-0";
-    affichageChiffres grille
-
-let mettreChiffre x y key = 
-	moveto (x*60+55) (600-(70+y*60));
-	if grille.(y).(x).modifiable != false then
-	begin
-		if grille.(y).(x).valeur == '0' then 
-			begin
-			grille.(y).(x) <- { modifiable = true; valeur = key};
-			draw_char key;
-			end
-		else
-			begin
-			grille.(y).(x) <- { modifiable = true; valeur = key};
-			clear_graph ();
-			draw_image (Ig.init_image "galaxy.ppm") 0 0;
-			setChiffre ();
-			end
-	end
-    
-let trouverDansGrille x y touche =
-	let a = (x-30)/60 in
-	let b = 8-((y-30)/60) in
-	mettreChiffre a b touche
-    
-let rec saisiChiffres () = 
-	set_color green;
-	let attend = wait_next_event [Button_down] in
-	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y and touche = read_key() in
-	(*let touche = attend.read_key() in*)
-	(*let touche = wait_next_event [Key_pressed] in*)
-	trouverDansGrille abscisse ordonnee touche;
-	(*mettreChiffre abscisse ordonnee touche;*)
-	saisiChiffres ()
-	      
 let regles() = (*permet d'afficher les regles et les commandes*)
 	set_color black;
 	set_font "-bitstream-bitstream charter-bold-r-normal--0-0-0-0-p-0-ascii-0";
@@ -159,22 +119,80 @@ let regles() = (*permet d'afficher les regles et les commandes*)
 	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
 	draw_string "q: exit"
 			
-let boutons () = (* cree le bouton pour afficher les regles et les commandes*)
+let boutons () =
+ (* cree le bouton pour afficher les regles et les commandes*)
 	 set_color blue;
 	 moveto 650 400;
      fill_rect 650 400 105 25;
      moveto 655 400;
      set_color white;
      draw_string "Commandes";
+     (* cree le bouton pour sauvegarder*) 
+	set_color blue;
+	 moveto 650 300;
+     fill_rect 650 300 105 25;
+     moveto 655 300;
+     set_color white;
+     draw_string "Sauvegarder";
+	 
      let attend = wait_next_event [Button_down] in
 	 let abscisse = attend.mouse_x and ordonnee = attend.mouse_y  in
-	 if abscisse < 756 && abscisse > 650 && ordonnee < 425 && ordonnee > 400 then
+	 if abscisse < 756 && abscisse > 650 && ordonnee < 325 && ordonnee > 300 then
+	 begin
+	 close_graph ();
+     save();
+     end
+     else if abscisse < 756 && abscisse > 650 && ordonnee < 425 && ordonnee > 400 then
 	 begin
 	 set_color white;
 	 moveto 640 400;
      fill_rect 650 400 105 25;
-     regles()
-     end
+     regles();
+     end;;
+     
+let setChiffre ()= 
+    set_color red;
+    affichageVerticale ();
+    affichageHorizontale ();
+    (*set_font "-*-fixed-bold-*-*-*-18-120-*-*-*-*-*-*";*)
+    set_font "-bitstream-bitstream charter-bold-r-normal--0-0-0-0-p-0-ascii-0";
+    affichageChiffres grille
+
+let mettreChiffre x y key = 
+	moveto (x*60+55) (600-(70+y*60));
+	if grille.(y).(x).modifiable != false then
+	begin
+		if grille.(y).(x).valeur == '0' then 
+			begin
+			grille.(y).(x) <- { modifiable = true; valeur = key};
+			draw_char key;
+			end
+		else
+			begin
+			grille.(y).(x) <- { modifiable = true; valeur = key};
+			clear_graph ();
+			draw_image (Ig.init_image "galaxy.ppm") 0 0;
+			setChiffre ();
+			boutons ();
+			end
+	end
+    
+let trouverDansGrille x y touche =
+	let a = (x-30)/60 in
+	let b = 8-((y-30)/60) in
+	mettreChiffre a b touche
+    
+let rec saisiChiffres () = 
+	set_color green;
+	let attend = wait_next_event [Button_down] in
+	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y and touche = read_key() in
+	(*let touche = attend.read_key() in*)
+	(*let touche = wait_next_event [Key_pressed] in*)
+	trouverDansGrille abscisse ordonnee touche;
+	(*mettreChiffre abscisse ordonnee touche;*)
+	saisiChiffres ()
+	      
+
 	
 let main() = 
 	

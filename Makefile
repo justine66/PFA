@@ -1,7 +1,7 @@
-all: affichage.native
+all: main.native
 
 %.native: *.ml
-		ocamlbuild -use-ocamlfind -pkgs 'graphics,str' $@
+		ocamlbuild -use-ocamlfind -pkg graphics -pkg str $@
 		
 .PHONY: clean
 

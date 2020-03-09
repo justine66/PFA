@@ -1,6 +1,8 @@
 open Graphics
 open Ig
 open Affichage
+open P1
+open Str
 
 let bouton () = 
 	 set_color blue;
@@ -21,6 +23,7 @@ let charge_grille cpt =
 		if x != cpt then 
 			try
 				print_string (input_line cf);
+				aux cf (x+1)
 			with
 				|End_of_file -> close_in charge_file;
 		else 
@@ -28,11 +31,13 @@ let charge_grille cpt =
 				let sp = Str.split (Str.regexp "/") (input_line cf) in
 				match sp with
 				|[] -> draw_string "Oh bah ça marche pas !!! "
-				|x::s -> match s with
-							|y::[] -> P1.start x y;
-									Affichage.main ();
-							|_ -> draw_string "trop d'arguments"
-				
+				|z::s -> (match s with
+							|y::t -> (match t with
+								|x::[] -> P1.start x y z;
+										Affichage.main ();
+								|_ -> draw_string "trop d'arguments !!!!")
+							|_ -> draw_string "y a un pb !!!!")
+
 			end
 	in aux charge_file 0;;
 	
@@ -41,9 +46,10 @@ let rec zone_click x =
 	let attend = wait_next_event [Button_down] in
 	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y  in
 	let rec zc cpt =
-		if cpt == -1 then zone_click x 
-		else if abscisse < 245  && abscisse > 225 && ordonnee < 420-(25*cpt) && ordonnee > 400-(25*cpt)  
+		if cpt == -1 then zone_click x (* permet de recommencer si on a pas cliqué au bon endroit*)
+		else if abscisse < 245  && abscisse > 225 && ordonnee < 420-(25*cpt) && ordonnee > 400-(25*cpt)
 			then charge_grille cpt
+			(*then begin moveto 50 50; draw_string "test" end*)
 			else zc (cpt-1)
 	in zc x;;
 	
@@ -74,7 +80,7 @@ let random_charge () =
 	let b = "solution"^(string_of_int r)^".txt" in
 	
 	Printf.printf "%s\n" a;
-	P1.start a b;
+	P1.start a b "_.txt";
 	Affichage.main ();;
 			 
 let rec click () =
