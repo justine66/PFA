@@ -137,18 +137,18 @@ let boutons () =
 	 
      let attend = wait_next_event [Button_down] in
 	 let abscisse = attend.mouse_x and ordonnee = attend.mouse_y  in
-	 if abscisse < 756 && abscisse > 650 && ordonnee < 325 && ordonnee > 300 then
-	 begin
-	 close_graph ();
-     save();
-     end
-     else if abscisse < 756 && abscisse > 650 && ordonnee < 425 && ordonnee > 400 then
-	 begin
-	 set_color white;
-	 moveto 640 400;
-     fill_rect 650 400 105 25;
-     regles();
-     end;;
+	 	if abscisse < 756 && abscisse > 650 && ordonnee < 325 && ordonnee > 300 then
+			 begin
+			 close_graph ();
+		     save [];
+		     end
+     	else if abscisse < 756 && abscisse > 650 && ordonnee < 425 && ordonnee > 400 then
+			 begin
+			 set_color white;
+			 moveto 640 400;
+		     fill_rect 650 400 105 25;
+		     regles();
+		     end;;
      
 let setChiffre ()= 
     set_color red;
@@ -160,21 +160,25 @@ let setChiffre ()=
 
 let mettreChiffre x y key = 
 	moveto (x*60+55) (600-(70+y*60));
+	m =[1,2,3,4,5,6,7,8,9]
 	if grille.(y).(x).modifiable != false then
 	begin
-		if grille.(y).(x).valeur == '0' then 
-			begin
-			grille.(y).(x) <- { modifiable = true; valeur = key};
-			draw_char key;
-			end
-		else
-			begin
-			grille.(y).(x) <- { modifiable = true; valeur = key};
-			clear_graph ();
-			draw_image (Ig.init_image "galaxy.ppm") 0 0;
-			setChiffre ();
-			boutons ();
-			end
+		if m.exist key then
+			if grille.(y).(x).valeur == '0' then 
+				begin
+				grille.(y).(x) <- { modifiable = true; valeur = key};
+				draw_char key;
+				end
+			else
+				begin
+				grille.(y).(x) <- { modifiable = true; valeur = key};
+				clear_graph ();
+				draw_image (Ig.init_image "galaxy.ppm") 0 0;
+				setChiffre ();
+				boutons ();
+				end
+		else (* peut mettre un match avec la liste des commandes si il y en a plus qu'une *)
+			if key == q then close_graph() 
 	end
     
 let trouverDansGrille x y touche =
@@ -191,6 +195,12 @@ let rec saisiChiffres () =
 	trouverDansGrille abscisse ordonnee touche;
 	(*mettreChiffre abscisse ordonnee touche;*)
 	saisiChiffres ()
+
+let aff_text s = 
+	set_color black;
+	moveto (650) (380);
+	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
+	draw_string s;  
 	      
 
 	
