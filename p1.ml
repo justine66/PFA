@@ -1,4 +1,5 @@
 open Str
+open Graphics
 
 
 type case = { mutable modifiable : bool;
@@ -105,17 +106,33 @@ let save_n a b =
 	in save_n_aux b;
 	close_in file;;
 			
-let save () = 
-		Printf.printf "donnez un nom a votre fichier\n%!";
-	let a = Scanf.scanf "%s"(fun x -> x^".txt"); in
+let rec save l = 
+	aff_text "donnez un nom a votre fichier\n%!";
+	let attend = wait_next_event [Key_pressed; Button_down] in
+		if attend ==Key_pressed then
+			if graphics.read_key() == "\n" then
+				begin
+				close_out save_file;
+				save_n (Str.concate "" l) []
+				end
+			else  
+				begin
+				l.append(graphics.read_key());
+				save l
+				end
+		else 
+			begin
+				close_out save_file;
+				save_n (Str.concate "" l) []
+			end;;
+	(*let a = Scanf.scanf "%s"(fun x -> x^".txt"); in
 	let save_file = open_out ("grids/"^a) in
 	for i = 0 to (Array.length grille)-1  do
 		for j = 0 to (Array.length grille.(0))-1  do
 			Printf.fprintf save_file "%c" grille.(i).(j).valeur; 
 		done
-	done;
-	close_out save_file;
-	save_n a [];;
+	done;*)
+	
 
 
 		 
