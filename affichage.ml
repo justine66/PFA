@@ -160,25 +160,25 @@ let setChiffre ()=
 
 let mettreChiffre x y key = 
 	moveto (x*60+55) (600-(70+y*60));
-	m =[1,2,3,4,5,6,7,8,9]
-	if grille.(y).(x).modifiable != false then
-	begin
-		if m.exist key then
-			if grille.(y).(x).valeur == '0' then 
-				begin
-				grille.(y).(x) <- { modifiable = true; valeur = key};
-				draw_char key;
-				end
-			else
-				begin
-				grille.(y).(x) <- { modifiable = true; valeur = key};
-				clear_graph ();
-				draw_image (Ig.init_image "galaxy.ppm") 0 0;
-				setChiffre ();
-				boutons ();
-				end
-		else (* peut mettre un match avec la liste des commandes si il y en a plus qu'une *)
-			if key == q then close_graph() 
+	let m =[1,2,3,4,5,6,7,8,9] in
+		if grille.(y).(x).modifiable != false then
+		begin
+			if List.exists key m then
+				if grille.(y).(x).valeur == '0' then 
+					begin
+					grille.(y).(x) <- { modifiable = true; valeur = key};
+					draw_char key;
+					end
+				else
+					begin
+					grille.(y).(x) <- { modifiable = true; valeur = key};
+					clear_graph ();
+					draw_image (Ig.init_image "galaxy.ppm") 0 0;
+					setChiffre ();
+					boutons ();
+					end
+			else (* peut mettre un match avec la liste des commandes si il y en a plus qu'une *)
+				if key == q then close_graph() 
 	end
     
 let trouverDansGrille x y touche =
@@ -196,11 +196,7 @@ let rec saisiChiffres () =
 	(*mettreChiffre abscisse ordonnee touche;*)
 	saisiChiffres ()
 
-let aff_text s = 
-	set_color black;
-	moveto (650) (380);
-	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
-	draw_string s;  
+
 	      
 
 	
@@ -212,5 +208,5 @@ let main() =
 	setChiffre ();
 	boutons ();
 	saisiChiffres ();
-	ignore(read_key ())
+	ignore(read_key ());;
 	(*while key_pressed()=false do test () done*)

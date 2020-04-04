@@ -105,26 +105,32 @@ let save_n a b =
 			|End_of_file -> save_name ((a^"/"^(!fichier_solution)^"/"^(!fichier_original))::List.rev(bb));
 	in save_n_aux b;
 	close_in file;;
-			
+
+let aff_text s = 
+	set_color black;
+	moveto (650) (380);
+	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
+	draw_string s;;
+
+let rec concat s l m =
+	match l with
+	|hd::tl -> concat s tl m^s^hd
+	|[]-> m
+	
+
 let rec save l = 
 	aff_text "donnez un nom a votre fichier\n%!";
 	let attend = wait_next_event [Key_pressed; Button_down] in
-		if attend ==Key_pressed then
-			if graphics.read_key() == "\n" then
-				begin
-				close_out save_file;
-				save_n (Str.concate "" l) []
-				end
+		if attend.keypressed then
+			if attend.key == '\n' then
+				save_n (concat "" l "") []
 			else  
 				begin
-				l.append(graphics.read_key());
-				save l
+					let s= Char.escaped attend.key in 
+					save (s::l);
 				end
 		else 
-			begin
-				close_out save_file;
-				save_n (Str.concate "" l) []
-			end;;
+			save_n (concat "" l "") []
 	(*let a = Scanf.scanf "%s"(fun x -> x^".txt"); in
 	let save_file = open_out ("grids/"^a) in
 	for i = 0 to (Array.length grille)-1  do
