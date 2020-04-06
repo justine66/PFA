@@ -35,6 +35,7 @@ let charge_grille cpt =
 							|y::t -> (match t with
 								|x::[] -> P1.start x y z;
 										Affichage.main ();
+								|[] -> draw_string "pas assez d'arguments !!!!"
 								|_ -> draw_string "trop d'arguments !!!!")
 							|_ -> draw_string "y a un pb !!!!")
 
@@ -60,14 +61,17 @@ let w_charge () =
 		draw_image (Ig.init_image "m.ppm") 0 0;
 		let rec charge_aux x y cf =
 			try
+				Printf.printf "charge";
 				let sp = Str.split (Str.regexp "/") (input_line cf) in
-				set_color blue;
-				fill_rect 225 y 20 20;
-				moveto x y;
-				set_color white;
-				draw_string (List.hd sp);
-				charge_aux x (y-25) cf;
-				cpt := !cpt +1;
+				match sp with 
+				|[] -> ()
+				|hd::tl -> (set_color blue;
+					fill_rect 225 y 20 20;
+					moveto x y;
+					set_color white;
+					draw_string hd ;
+					charge_aux x (y-25) cf;
+					cpt := !cpt +1;)
 			with
 				|End_of_file -> close_in charge_file;
 		in charge_aux 250 400 charge_file;
@@ -91,7 +95,7 @@ let rec click () =
 		else click ();;
 		 
 let () =
-Printf.printf "bonjour\n";
+Printf.printf "bonjours\n";
 	open_graph " 900x600";
 	draw_image (Ig.init_image "m.ppm") 0 0;
 	moveto 200 500;

@@ -84,10 +84,11 @@ let check () =
 let check_case i j = if grille.(i).(j).valeur == solution.(i).(j) then true else false;;
 	
 let save_name bd =
-		(*Printf.printf "Test\n";*)
+		Printf.printf "Test\n";
 		let file = open_out "sauvegarde.txt" in 
 		let rec save_b bc = 
 			match bc with
+
 			|hd::tl -> Printf.fprintf file "%s\n" hd; save_b tl
 			|[] -> ()
 		in save_b bd;
@@ -99,16 +100,17 @@ let save_n a b =
 
 		try
 			let c = input_line file in 
+			Printf.printf "1";
 			save_n_aux (c::bb); (*Printf.printf "test\n" ; if (i == (in_channel_length file)) then a::b else b*)
 			
 		with
-			|End_of_file -> save_name ((a^"/"^(!fichier_solution)^"/"^(!fichier_original))::List.rev(bb));
+			|End_of_file -> save_name ((a^".txt/"^(!fichier_solution)^"/"^(!fichier_original))::List.rev(bb));
 	in save_n_aux b;
 	close_in file;;
 
-let aff_text s = 
-	set_color black;
-	moveto (650) (380);
+let aff_text s x y = 
+	set_color white;
+	moveto x y;
 	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
 	draw_string s;;
 
@@ -119,16 +121,27 @@ let rec concat s l m =
 	
 
 let rec save l = 
-	aff_text "donnez un nom a votre fichier\n%!";
+	
+	clear_graph ();
+	draw_image (Ig.init_image "galaxy.ppm") 0 0;
+	aff_text "donnez un nom a votre fichier!" 200 500;
+	aff_text " nom : "200 480 ;
+	aff_text (concat "" l "") 250 480;
 	let attend = wait_next_event [Key_pressed; Button_down] in
 		if attend.keypressed then
-			if attend.key == '\n' then
-				save_n (concat "" l "") []
+		begin
+			if attend.key == '\r' then
+			begin
+				close_graph ();
+				save_n (concat "" l "") [];
+			end
 			else  
 				begin
 					let s= Char.escaped attend.key in 
+					draw_char attend.key;
 					save (s::l);
 				end
+			end
 		else 
 			save_n (concat "" l "") []
 	(*let a = Scanf.scanf "%s"(fun x -> x^".txt"); in

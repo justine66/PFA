@@ -92,7 +92,15 @@ let affichageChiffres g =
 																						end
 			|_ -> assert false)
 		|_ -> assert false
-	in aChiffres_rec g 0 0;; 		
+	in aChiffres_rec g 0 0;; 
+
+let setChiffre ()= 
+    set_color red;
+    affichageVerticale ();
+    affichageHorizontale ();
+    (*set_font "-*-fixed-bold-*-*-*-18-120-*-*-*-*-*-*";*)
+    set_font "-bitstream-bitstream charter-bold-r-normal--0-0-0-0-p-0-ascii-0";
+    affichageChiffres grille		
  
 let regles() = (*permet d'afficher les regles et les commandes*)
 	set_color black;
@@ -118,29 +126,37 @@ let regles() = (*permet d'afficher les regles et les commandes*)
 	moveto (660) (260);
 	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
 	draw_string "q: exit"
+
 			
-let boutons () =
+let rec boutons () =
  (* cree le bouton pour afficher les regles et les commandes*)
-	 set_color blue;
-	 moveto 650 400;
-     fill_rect 650 400 105 25;
-     moveto 655 400;
-     set_color white;
-     draw_string "Commandes";
-     (* cree le bouton pour sauvegarder*) 
 	set_color blue;
-	 moveto 650 300;
-     fill_rect 650 300 105 25;
-     moveto 655 300;
-     set_color white;
-     draw_string "Sauvegarder";
+	moveto 650 400;
+    fill_rect 650 400 105 25;
+    moveto 655 400;
+    set_color white;
+    draw_string "Commandes";
+    (* cree le bouton pour sauvegarder*) 
+	set_color blue;
+	moveto 650 300;
+    fill_rect 650 300 105 25;
+    moveto 655 300;
+    set_color white;
+    draw_string "Sauvegarder";
+(* cree le bouton pour verifier une case*)
+    set_color blue;
+	moveto 650 200;
+    fill_rect 650 200 105 25;
+    moveto 655 200;
+    set_color white;
+    draw_string "check case";
 	 
-     let attend = wait_next_event [Button_down] in
-	 let abscisse = attend.mouse_x and ordonnee = attend.mouse_y  in
+    let attend = wait_next_event [Button_down] in
+	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y  in
 	 	if abscisse < 756 && abscisse > 650 && ordonnee < 325 && ordonnee > 300 then
 			 begin
-			 close_graph ();
-		     save [];
+			 P1.save [];
+			
 		     end
      	else if abscisse < 756 && abscisse > 650 && ordonnee < 425 && ordonnee > 400 then
 			 begin
@@ -148,38 +164,66 @@ let boutons () =
 			 moveto 640 400;
 		     fill_rect 650 400 105 25;
 		     regles();
-		     end;;
+		     end
+			 else if abscisse < 756 && abscisse > 650 && ordonnee < 225 && ordonnee > 200 then
+				 begin
+				 	Printf.printf "check";
+				 	let attend = wait_next_event [Button_down] in
+				 	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y  in
+				 	let a = (ordonnee-30)/60 in
+					let b = 8-((abscisse-30)/60) in
+					if P1.check_case a b then 
+						begin 
+						Printf.printf "true";
+						clear_graph ();
+						draw_image (Ig.init_image "galaxy.ppm") 0 0;
+						setChiffre ();
+						
+						set_color green;
+						moveto 655 100;
+						draw_string "true";
+						boutons ();
+						end
+					else begin 
+						Printf.printf "false";
+						clear_graph ();
+						draw_image (Ig.init_image "galaxy.ppm") 0 0;
+						setChiffre ();
+						
+						set_color red;
+						moveto 655 100;
+						draw_string "false";
+						boutons ();
+						end
+					
+			     end;;
      
-let setChiffre ()= 
-    set_color red;
-    affichageVerticale ();
-    affichageHorizontale ();
-    (*set_font "-*-fixed-bold-*-*-*-18-120-*-*-*-*-*-*";*)
-    set_font "-bitstream-bitstream charter-bold-r-normal--0-0-0-0-p-0-ascii-0";
-    affichageChiffres grille
 
 let mettreChiffre x y key = 
 	moveto (x*60+55) (600-(70+y*60));
-	let m =[1,2,3,4,5,6,7,8,9] in
+	let m =['1';'2';'3';'4';'5';'6';'7';'8';'9'] in
 		if grille.(y).(x).modifiable != false then
-		begin
-			if List.exists key m then
-				if grille.(y).(x).valeur == '0' then 
-					begin
-					grille.(y).(x) <- { modifiable = true; valeur = key};
-					draw_char key;
-					end
-				else
-					begin
-					grille.(y).(x) <- { modifiable = true; valeur = key};
-					clear_graph ();
-					draw_image (Ig.init_image "galaxy.ppm") 0 0;
-					setChiffre ();
-					boutons ();
-					end
-			else (* peut mettre un match avec la liste des commandes si il y en a plus qu'une *)
-				if key == q then close_graph() 
-	end
+			let rec modif n=
+				match n with
+				|hd::tl  when hd == key ->
+						if grille.(y).(x).valeur == '0' then 
+							begin
+								draw_char key;
+							grille.(y).(x) <- { modifiable = true; valeur = key};
+							boutons ();
+							end
+						else
+							begin
+							grille.(y).(x) <- { modifiable = true; valeur = key};
+							clear_graph ();
+							draw_image (Ig.init_image "galaxy.ppm") 0 0;
+							setChiffre ();
+							boutons ();
+							end
+				|hd::tl  when hd != key -> modif tl
+				|[] -> (* peut mettre un match avec la liste des commandes si il y en a plus qu'une *)
+						if key == 'q' then close_graph() 
+			in modif m ;;
     
 let trouverDansGrille x y touche =
 	let a = (x-30)/60 in
@@ -189,9 +233,9 @@ let trouverDansGrille x y touche =
 let rec saisiChiffres () = 
 	set_color green;
 	let attend = wait_next_event [Button_down] in
-	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y and touche = read_key() in
-	(*let touche = attend.read_key() in*)
-	(*let touche = wait_next_event [Key_pressed] in*)
+	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y (*and touche = read_key()*) in
+	let attend2 = wait_next_event [Key_pressed] in
+	let touche = attend2.key in
 	trouverDansGrille abscisse ordonnee touche;
 	(*mettreChiffre abscisse ordonnee touche;*)
 	saisiChiffres ()
