@@ -1,5 +1,6 @@
 open Str
 open Graphics
+open Affichage
 
 
 type case = { mutable modifiable : bool;
@@ -124,8 +125,8 @@ let rec save l =
 	
 	clear_graph ();
 	draw_image (Ig.init_image "galaxy.ppm") 0 0;
-	aff_text "donnez un nom a votre fichier!" 200 500;
-	aff_text " nom : "200 480 ;
+	aff_text "donnez un nom a votre fichier " 200 500;
+	aff_text " nom : " 200 480;
 	aff_text (concat "" l "") 250 480;
 	let attend = wait_next_event [Key_pressed; Button_down] in
 		if attend.keypressed then
@@ -152,7 +153,14 @@ let rec save l =
 		done
 	done;*)
 	
-
+let recommencer () =
+		clear_graph();
+		start fichier_original fichier_solution fichier_charge;
+		draw_image (Ig.init_image "galaxy.ppm") 0 0;
+		Affichage.setChiffre ();
+		Affichage.boutons ();
+		Affichage.saisiChiffres ();
+		ignore(read_key ());;
 
 		 
 

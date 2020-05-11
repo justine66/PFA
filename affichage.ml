@@ -102,45 +102,51 @@ let setChiffre ()=
     set_font "-bitstream-bitstream charter-bold-r-normal--0-0-0-0-p-0-ascii-0";
     affichageChiffres grille		
  
-let regles() = (*permet d'afficher les regles et les commandes*)
+let regles () = (*permet d'afficher les regles et les commandes*)
 	set_color black;
 	set_font "-bitstream-bitstream charter-bold-r-normal--0-0-0-0-p-0-ascii-0";
-	moveto 640 400;
+	moveto 640 550;
 	draw_string "Les Regles : ";
-	moveto (650) (380);
+	moveto (650) (530);
 	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
 	draw_string "Remplir les cases vides avec";  
-	moveto (650) (365);
+	moveto (650) (510);
 	draw_string "les chiffres de 1 a 9, de telle"; 
-	moveto (650) (350);
+	moveto (650) (490);
 	draw_string "sorte qu'ils n'apparaissent";
-	moveto (650) (335);
+	moveto (650) (470);
 	draw_string "qu'une fois par ligne, ";
-	moveto (650) (320);
+	moveto (650) (450);
 	draw_string "par colonne et par carre";
-	moveto (650) (305);
+	moveto (650) (430);
 	draw_string "de 3x3 cases."; 
-	moveto (640) (280);
+	moveto (640) (400);
 	set_font "-bitstream-bitstream charter-bold-r-normal--0-0-0-0-p-0-ascii-0";
 	draw_string "Les Commandes : ";
-	moveto (660) (260);
+	moveto (650) (380);
 	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
-	draw_string "q: exit"
+	draw_string "q: exit";
+	moveto (650) (360);
+	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
+	draw_string "pour effacer un chiffre cliquez";
+	moveto (650) (340);
+	set_font "-bitstream-bitstream charter-medium-r-normal--0-0-0-0-p-0-ascii-0";
+	draw_string "sur la case et tapez 0"
 
 			
 let rec boutons () =
  (* cree le bouton pour afficher les regles et les commandes*)
 	set_color blue;
 	moveto 650 400;
-    fill_rect 650 400 105 25;
-    moveto 655 400;
+    fill_rect 650 300 105 25;
+    moveto 655 300;
     set_color white;
     draw_string "Commandes";
     (* cree le bouton pour sauvegarder*) 
 	set_color blue;
 	moveto 650 300;
-    fill_rect 650 300 105 25;
-    moveto 655 300;
+    fill_rect 650 250 105 25;
+    moveto 655 250;
     set_color white;
     draw_string "Sauvegarder";
 (* cree le bouton pour verifier une case*)
@@ -150,31 +156,38 @@ let rec boutons () =
     moveto 655 200;
     set_color white;
     draw_string "check case";
+    set_color blue;
+
+	moveto 650 200;
+    fill_rect 650 150 105 25;
+    moveto 655 150;
+    set_color white;
+    draw_string "recommencer";
 	 
     let attend = wait_next_event [Button_down] in
 	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y  in
-	 	if abscisse < 756 && abscisse > 650 && ordonnee < 325 && ordonnee > 300 then
+	 	if abscisse < 756 && abscisse > 650 && ordonnee < 275 && ordonnee > 250 then
 			 begin
 			 P1.save [];
-			
 		     end
-     	else if abscisse < 756 && abscisse > 650 && ordonnee < 425 && ordonnee > 400 then
+
+     	else if abscisse < 756 && abscisse > 650 && ordonnee < 325 && ordonnee > 300 then
 			 begin
-			 set_color white;
-			 moveto 640 400;
-		     fill_rect 650 400 105 25;
 		     regles();
 		     end
+
 			 else if abscisse < 756 && abscisse > 650 && ordonnee < 225 && ordonnee > 200 then
 				 begin
 				 	Printf.printf "check";
 				 	let attend = wait_next_event [Button_down] in
 				 	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y  in
-				 	let a = (ordonnee-30)/60 in
-					let b = 8-((abscisse-30)/60) in
+				 	let a = 8-(ordonnee-30)/60 in
+					let b = ((abscisse-30)/60) in
+					(*Printf.printf "a: %d\n b: %d\n" a b;
+					Printf.printf "grille: %c\n solution: %c\n" grille.(a).(b).valeur solution.(a).(b);*)
 					if P1.check_case a b then 
 						begin 
-						Printf.printf "true";
+						Printf.printf "true\n";
 						clear_graph ();
 						draw_image (Ig.init_image "galaxy.ppm") 0 0;
 						setChiffre ();
@@ -185,7 +198,7 @@ let rec boutons () =
 						boutons ();
 						end
 					else begin 
-						Printf.printf "false";
+						Printf.printf "false\n";
 						clear_graph ();
 						draw_image (Ig.init_image "galaxy.ppm") 0 0;
 						setChiffre ();
@@ -196,7 +209,12 @@ let rec boutons () =
 						boutons ();
 						end
 					
-			     end;;
+			     end
+			 	else if abscisse < 756 && abscisse > 650 && ordonnee < 175 && ordonnee > 150 then
+					 begin
+					 	Printf.printf "recommencer";
+					 	P1.recommencer ();
+					 end;;
      
 
 let mettreChiffre x y key = 
@@ -229,6 +247,31 @@ let trouverDansGrille x y touche =
 	let a = (x-30)/60 in
 	let b = 8-((y-30)/60) in
 	mettreChiffre a b touche
+
+let finir ()= 
+if P1.check () then 
+	begin 
+	clear_graph ();
+	draw_image (Ig.init_image "galaxy.ppm") 0 0;
+	P1.aff_text "Vous avez gagne" 200 500;
+	end
+else 
+	begin 
+	clear_graph ();
+	draw_image (Ig.init_image "galaxy.ppm") 0 0;
+	P1.aff_text "Vous avez perdu" 200 500;
+	end
+
+let contient_un_zero () =
+ try
+  for i = 0 to 8 do
+	for j = 0 to 8 do
+	   if grille.(i).(j).valeur = '0' then raise Exit;
+	done
+  done;
+  true
+ with Exit -> false;;
+
     
 let rec saisiChiffres () = 
 	set_color green;
@@ -237,6 +280,7 @@ let rec saisiChiffres () =
 	let attend2 = wait_next_event [Key_pressed] in
 	let touche = attend2.key in
 	trouverDansGrille abscisse ordonnee touche;
+	if contient_un_zero() then finir();
 	(*mettreChiffre abscisse ordonnee touche;*)
 	saisiChiffres ()
 
