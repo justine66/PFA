@@ -2,6 +2,8 @@ open Graphics
 open Ig
 open P1
 
+
+
 let affichageVerticale ()= 
 
 	for j = 0 to 3 do
@@ -156,13 +158,20 @@ let rec boutons () =
     moveto 655 200;
     set_color white;
     draw_string "check case";
-    set_color blue;
 
+    set_color blue;
 	moveto 650 200;
     fill_rect 650 150 105 25;
     moveto 655 150;
     set_color white;
     draw_string "recommencer";
+
+    set_color blue;
+    moveto 650 150;
+    fill_rect 650 100 105 25;
+    moveto 655 100;
+    set_color white;
+    draw_string "aide";
 	 
     let attend = wait_next_event [Button_down] in
 	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y  in
@@ -213,11 +222,61 @@ let rec boutons () =
 			 	else if abscisse < 756 && abscisse > 650 && ordonnee < 175 && ordonnee > 150 then
 					 begin
 					 	Printf.printf "recommencer";
-					 	P1.recommencer ();
-					 end;;
-     
-
-let mettreChiffre x y key = 
+					 	recommencer ();
+					 	boutons ();
+					 end
+					else if abscisse < 756 && abscisse > 650 && ordonnee < 125 && ordonnee > 100 then
+					 begin
+					 	P1.aide ();
+					 	setChiffre ();
+					 	boutons ();
+					 end;
+and recommencer () =
+		clear_graph();
+		(*Affichage.main()*)
+		P1.start !fichier_original !fichier_solution "_.txt" ;
+		draw_image (Ig.init_image "galaxy.ppm") 0 0;
+		setChiffre ();
+		boutons ();
+		saisiChiffres ();
+		ignore(read_key ());
+and saisiChiffres () = 
+	set_color green;
+	let attend = wait_next_event [Button_down] in
+	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y (*and touche = read_key()*) in
+	let attend2 = wait_next_event [Key_pressed] in
+	let touche = attend2.key in
+	trouverDansGrille abscisse ordonnee touche;
+	if contient_un_zero() then finir();
+	(*mettreChiffre abscisse ordonnee touche;*)
+	saisiChiffres ();
+and trouverDansGrille x y touche =
+	let a = (x-30)/60 in
+	let b = 8-((y-30)/60) in
+	mettreChiffre a b touche;
+and contient_un_zero () =
+	 try
+	  for i = 0 to 8 do
+		for j = 0 to 8 do
+		   if grille.(i).(j).valeur = '0' then raise Exit;
+		done
+	  done;
+	  true
+	 with Exit -> false;
+and finir ()= 
+	if P1.check () then 
+		begin 
+		clear_graph ();
+		draw_image (Ig.init_image "galaxy.ppm") 0 0;
+		P1.aff_text "Vous avez gagne" 200 500;
+		end
+	else 
+		begin 
+		clear_graph ();
+		draw_image (Ig.init_image "galaxy.ppm") 0 0;
+		P1.aff_text "Vous avez perdu" 200 500;
+		end;
+and mettreChiffre x y key = 
 	moveto (x*60+55) (600-(70+y*60));
 	let m =['1';'2';'3';'4';'5';'6';'7';'8';'9'] in
 		if grille.(y).(x).modifiable != false then
@@ -243,50 +302,18 @@ let mettreChiffre x y key =
 						if key == 'q' then close_graph() 
 			in modif m ;;
     
-let trouverDansGrille x y touche =
-	let a = (x-30)/60 in
-	let b = 8-((y-30)/60) in
-	mettreChiffre a b touche
 
-let finir ()= 
-if P1.check () then 
-	begin 
-	clear_graph ();
-	draw_image (Ig.init_image "galaxy.ppm") 0 0;
-	P1.aff_text "Vous avez gagne" 200 500;
-	end
-else 
-	begin 
-	clear_graph ();
-	draw_image (Ig.init_image "galaxy.ppm") 0 0;
-	P1.aff_text "Vous avez perdu" 200 500;
-	end
 
-let contient_un_zero () =
- try
-  for i = 0 to 8 do
-	for j = 0 to 8 do
-	   if grille.(i).(j).valeur = '0' then raise Exit;
-	done
-  done;
-  true
- with Exit -> false;;
+
+
+
 
     
-let rec saisiChiffres () = 
-	set_color green;
-	let attend = wait_next_event [Button_down] in
-	let abscisse = attend.mouse_x and ordonnee = attend.mouse_y (*and touche = read_key()*) in
-	let attend2 = wait_next_event [Key_pressed] in
-	let touche = attend2.key in
-	trouverDansGrille abscisse ordonnee touche;
-	if contient_un_zero() then finir();
-	(*mettreChiffre abscisse ordonnee touche;*)
-	saisiChiffres ()
 
 
-	      
 
+
+		
 	
 let main() = 
 	
